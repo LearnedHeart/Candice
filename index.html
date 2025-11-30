@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards - Histoire Intellectuelle L2</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        .scene {
+            width: 600px;
+            height: 350px;
+            perspective: 1000px;
+            margin-bottom: 30px;
+            cursor: pointer;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 650px) {
+            .scene {
+                width: 100%;
+                height: 400px;
+            }
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 15px;
+        }
+
+        .card.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card__face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            box-sizing: border-box;
+            border-radius: 15px;
+            background-color: var(--card-bg);
+            text-align: center;
+        }
+
+        .card__face--front {
+            border: 2px solid var(--primary-color);
+        }
+
+        .card__face--back {
+            background-color: var(--primary-color);
+            color: white;
+            transform: rotateY(180deg);
+            border: 2px solid var(--primary-color);
+        }
+
+        .category-tag {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.7;
+        }
+
+        .card-content {
+            font-size: 1.3rem;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .instruction {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        button {
+            padding: 12px 24px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .progress {
+            font-weight: bold;
+            color: var(--primary-color);
+            min-width: 80px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Révisions Histoire Intellectuelle (L2)</h1>
+
+    <div class="scene" onclick="flipCard()">
+        <div class="card" id="flashcard">
+            <div class="card__face card__face--front">
+                <span class="category-tag" id="category-front">Catégorie</span>
+                <div class="card-content" id="question-text">Question ici</div>
+                <div class="instruction">(Clique pour voir la réponse)</div>
+            </div>
+            <div class="card__face card__face--back">
+                <span class="category-tag" id="category-back">Catégorie</span>
+                <div class="card-content" id="answer-text">Réponse ici</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button onclick="prevCard()">← Précédent</button>
+        <div class="progress" id="progress-text">1 / 40</div>
+        <button onclick="nextCard()">Suivant →</button>
+    </div>
+
+    <script>
+        // Données hardcodées (issues de la conversation précédente)
+        const data = [
+            // 1. Contexte et Évolution de l'Église
+            { category: "Contexte & Église", q: "Qui a introduit le terme 'intellectuel' pour parler du Moyen Âge ?", a: "C'est l'historien Jacques Le Goff, bien que le mot n'existait pas à l'époque." },
+            { category: "Contexte & Église", q: "Quelle est l'évolution démographique de l'Europe entre le 11e et le 13e siècle ?", a: "La population a doublé, passant de 25-40 millions à 60-80 millions." },
+            { category: "Contexte & Église", q: "Quels sont les deux objectifs principaux de la Réforme Grégorienne ?", a: "Distinguer les clercs des laïcs (célibat) et affirmer la supériorité du pouvoir spirituel sur le temporel." },
+            { category: "Contexte & Église", q: "Comment le mode d'élection du pape change-t-il au 11e siècle ?", a: "Il n'est plus choisi par l'aristocratie locale mais élu par les cardinaux (interne à l'Église)." },
+            { category: "Contexte & Église", q: "Qu'est-ce que la théocratie pontificale ?", a: "Un système où l'autorité du pape prime, s'appuyant sur le divin pour contrôler les affaires terrestres." },
+            
+            // 2. Le Monde Monastique et les Écoles
+            { category: "Monastères & Écoles", q: "Quelles sont les disciplines du Trivium ?", a: "Les disciplines littéraires : grammaire, rhétorique, dialectique/logique." },
+            { category: "Monastères & Écoles", q: "Quelles sont les disciplines du Quadrivium ?", a: "La science des nombres : géométrie, musique, astronomie, arithmétique." },
+            { category: "Monastères & Écoles", q: "Pourquoi les monastères (comme Cîteaux) ferment-ils leurs écoles externes au 12e siècle ?", a: "Dans un esprit de renoncement au monde, ils refusent les enfants ('oblats') et se replient sur eux-mêmes." },
+            { category: "Monastères & Écoles", q: "Qui est Hildegarde de Bingen ?", a: "Une abbesse allemande du 12e siècle, reconnue pour ses savoirs encyclopédiques (médecine, musique, visions)." },
+            { category: "Monastères & Écoles", q: "Quelle est la méthode d'Anselme de Canterbury dans 'La foi en quête de la raison' ?", a: "Il utilise la logique pure pour essayer de prouver l'existence de Dieu." },
+
+            // 3. Les Écoles Urbaines et le Savoir
+            { category: "Écoles Urbaines", q: "Quels sont les 3 types d'écoles urbaines au 12e siècle ?", a: "Les écoles cathédrales (évêque), les écoles canoniales (chanoines) et les écoles privées (maîtres indépendants)." },
+            { category: "Écoles Urbaines", q: "Qu'est-ce que la Licentia Docendi ?", a: "L'autorisation d'enseigner délivrée par le chancelier ou l'évêque, obligatoire dès 1179." },
+            { category: "Écoles Urbaines", q: "Qui a écrit le 'Décret' (base du droit canonique) ?", a: "Gratien, qui a compilé et concordé les textes contradictoires." },
+            { category: "Écoles Urbaines", q: "Qu'est-ce que le 'Livre des Sentences' ?", a: "Une somme théologique écrite par Pierre Lombard, qui devient le manuel de référence des universités." },
+            { category: "Écoles Urbaines", q: "Qu'est-ce que la Quaestio dans l'enseignement ?", a: "Un moment où le maître s'arrête sur un problème spécifique lors de la lecture pour le résoudre de manière interactive." },
+            { category: "Écoles Urbaines", q: "Pourquoi Daniel Morley se rend-il à Tolède plutôt qu'à Paris ?", a: "Pour trouver les textes arabes et grecs (Aristote), jugeant les maîtres de Paris prétentieux et ignorants." },
+            { category: "Écoles Urbaines", q: "Qu'est-ce qu'une Madrasa ?", a: "Un collège d'enseignement supérieur dans le monde musulman, souvent une institution privée." },
+            { category: "Écoles Urbaines", q: "Qui est Rashi ?", a: "Un savant juif de Troyes (11e s.) célèbre pour ses commentaires de la Torah et du Talmud." },
+
+            // 4. Naissance des Universités
+            { category: "Universités", q: "Que signifie le mot Universitas à l'origine ?", a: "Une association ou corporation autonome (de métiers, de maîtres ou d'étudiants)." },
+            { category: "Universités", q: "Quelle est la particularité de l'Université de Bologne ?", a: "C'est une université d'étudiants : ce sont eux qui dirigent, embauchent les maîtres et gèrent l'organisation." },
+            { category: "Universités", q: "Qu'est-ce que le privilège 'Habita' (1158) ?", a: "L'empereur Frédéric 1er accorde une protection spéciale aux étudiants de Bologne (justice de l'Église)." },
+            { category: "Universités", q: "Quelle est la particularité de l'Université de Paris ?", a: "C'est une université de maîtres (et non d'étudiants), née de conflits avec l'évêque et le roi." },
+            { category: "Universités", q: "Quel droit Philippe Auguste accorde-t-il aux étudiants parisiens en 1200 ?", a: "Le 'for ecclésiastique' : ils ne dépendent que de la justice de l'évêque, pas de la police royale." },
+            { category: "Universités", q: "Qu'est-ce que la 'Grande Dispersion' de 1229 ?", a: "Une grève (cessatio) de 2 ans où maîtres et étudiants quittent Paris pour protester contre la répression royale." },
+            { category: "Universités", q: "Qu'est-ce que la bulle Parens Scientiarum (1231) ?", a: "Le pape reconnaît officiellement l'autonomie et les droits (dont la grève) de l'Université de Paris." },
+            { category: "Universités", q: "Pourquoi la naissance de l'Université d'Oxford est-elle atypique ?", a: "Elle n'avait ni école cathédrale ni monastère préexistants; elle s'est formée par un rassemblement informel." },
+            { category: "Universités", q: "Quelle est la différence entre un Studium et une Université ?", a: "Un Studium est un centre d'étude créé par une autorité sans l'autonomie corporative d'une université." },
+            { category: "Universités", q: "Quelle université espagnole est fondée par le roi Alphonse X en 1218 ?", a: "L'Université de Salamanque." },
+
+            // 5. Débats & Société
+            { category: "Débats & Société", q: "Qu'est-ce qu'une Disputatio ?", a: "Un débat scolastique structuré avec arguments 'pour' et 'contre', animé par le maître." },
+            { category: "Débats & Société", q: "Qu'est-ce que la Determinatio ?", a: "La synthèse finale et la solution donnée par le maître à la fin d'une dispute." },
+            { category: "Débats & Société", q: "Quels sont les deux types d'arguments utilisés dans les débats ?", a: "L'Autorité (Bible, Pères de l'Église, Aristote) et la Raison (logique)." },
+            { category: "Débats & Société", q: "Pourquoi l'usure (prêt à intérêt) est-elle condamnée par les théologiens ?", a: "Car c'est vendre le temps, or le temps appartient à Dieu ('Le temps est à Dieu')." },
+            { category: "Débats & Société", q: "Qu'est-ce que la 'pauvreté volontaire' ?", a: "Se dépouiller de ses biens pour des raisons spirituelles, distinguée de la pauvreté subie." },
+            { category: "Débats & Société", q: "Comment les maîtres interviennent-ils dans la politique (ex: Louis IX) ?", a: "Ils deviennent des experts consultés pour légitimer des décisions (guerre juste, Talmud, etc.)." },
+
+            // 6. Figures Clés
+            { category: "Figures Clés", q: "Qui est Pierre Abélard (1079-1142) ?", a: "Maître de logique à Paris, connu pour sa méthode dialectique (Sic et Non) et son histoire avec Héloïse." },
+            { category: "Figures Clés", q: "Qui est Hugues de Saint-Victor ?", a: "Un maître parisien célèbre pour sa pédagogie visuelle et son ouvrage Didascalicon." },
+            { category: "Figures Clés", q: "Qu'est-ce que la 'Glose ordinaire' ?", a: "Le commentaire biblique standard du Moyen Âge, élaboré par Anselme de Laon." },
+            { category: "Figures Clés", q: "Qui est Irnerius ?", a: "Le premier grand maître de droit à Bologne, fondateur de l'école des glossateurs sur le Code Justinien." },
+            { category: "Figures Clés", q: "Qui est Gérard de Crémone ?", a: "Un traducteur basé à Tolède qui a traduit l'Almageste de Ptolémée et le Canon d'Avicenne." },
+            { category: "Figures Clés", q: "Quelle est l'œuvre majeure d'Adélard de Bath ?", a: "Il a traduit Euclide et al-Khwarizmi, introduisant les sciences arabes et grecques en Europe." }
+        ];
+
+        let currentIndex = 0;
+        const cardElement = document.getElementById('flashcard');
+        const questionText = document.getElementById('question-text');
+        const answerText = document.getElementById('answer-text');
+        const categoryFront = document.getElementById('category-front');
+        const categoryBack = document.getElementById('category-back');
+        const progressText = document.getElementById('progress-text');
+
+        function updateCard() {
+            // Enlever la classe flipped pour revenir au recto
+            cardElement.classList.remove('is-flipped');
+            
+            // Attendre un tout petit peu que la carte se retourne avant de changer le texte pour éviter le spoiler
+            // Si on change de carte (next/prev), on veut voir la question immédiatement
+            setTimeout(() => {
+                const item = data[currentIndex];
+                questionText.textContent = item.q;
+                answerText.textContent = item.a;
+                categoryFront.textContent = item.category;
+                categoryBack.textContent = item.category;
+                progressText.textContent = `${currentIndex + 1} / ${data.length}`;
+            }, 200);
+        }
+
+        function flipCard() {
+            cardElement.classList.toggle('is-flipped');
+        }
+
+        function nextCard() {
+            if (currentIndex < data.length - 1) {
+                currentIndex++;
+            } else {
+                currentIndex = 0; // Boucle au début
+            }
+            updateCard();
+        }
+
+        function prevCard() {
+            if (currentIndex > 0) {
+                currentIndex--;
+            } else {
+                currentIndex = data.length - 1; // Boucle à la fin
+            }
+            updateCard();
+        }
+
+        // Initialisation
+        updateCard();
+
+        // Support flèches clavier
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextCard();
+            if (e.key === 'ArrowLeft') prevCard();
+            if (e.key === ' ' || e.key === 'Enter') flipCard();
+        });
+
+    </script>
+</body>
+</html>
