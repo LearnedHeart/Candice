@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flashcards - Histoire Intellectuelle L2</title>
+    <title>Révisions - Histoire Intellectuelle L2</title>
     <style>
         :root {
             --primary-color: #2c3e50;
             --accent-color: #3498db;
+            --secondary-accent: #e74c3c;
             --bg-color: #f0f2f5;
             --card-bg: #ffffff;
             --text-color: #333;
@@ -27,11 +28,12 @@
 
         h1 {
             color: var(--primary-color);
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             text-align: center;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
         }
 
+        /* --- FLASHCARD STYLES --- */
         .scene {
             width: 600px;
             height: 350px;
@@ -40,12 +42,8 @@
             cursor: pointer;
         }
 
-        /* Mobile responsive */
         @media (max-width: 650px) {
-            .scene {
-                width: 100%;
-                height: 400px;
-            }
+            .scene { width: 100%; height: 400px; }
         }
 
         .card {
@@ -79,10 +77,7 @@
             text-align: center;
         }
 
-        .card__face--front {
-            border: 2px solid var(--primary-color);
-        }
-
+        .card__face--front { border: 2px solid var(--primary-color); }
         .card__face--back {
             background-color: var(--primary-color);
             color: white;
@@ -113,10 +108,14 @@
             opacity: 0.6;
         }
 
+        /* --- CONTROLS --- */
         .controls {
             display: flex;
             gap: 20px;
             align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         button {
@@ -131,19 +130,93 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        button:hover {
-            background-color: #2980b9;
-        }
+        button:hover { background-color: #2980b9; }
+        button:active { transform: translateY(1px); }
 
-        button:active {
-            transform: translateY(1px);
+        .btn-summary {
+            background-color: var(--secondary-accent);
         }
+        .btn-summary:hover { background-color: #c0392b; }
 
         .progress {
             font-weight: bold;
             color: var(--primary-color);
             min-width: 80px;
             text-align: center;
+        }
+
+        /* --- MODAL (RÉSUMÉ) STYLES --- */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.5); 
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; 
+            padding: 40px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 900px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            right: 0;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Styles du texte du résumé */
+        .summary-text {
+            line-height: 1.6;
+            color: #333;
+        }
+        .summary-text h2 { color: var(--secondary-accent); border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 30px;}
+        .summary-text h3 { color: var(--primary-color); margin-top: 25px; }
+        .summary-text ul { margin-left: 20px; }
+        .summary-text li { margin-bottom: 8px; }
+        
+        /* Style des liens PDF */
+        .citation a {
+            font-size: 0.75em;
+            color: #e74c3c;
+            font-weight: bold;
+            text-decoration: none;
+            vertical-align: super;
+            margin-left: 3px;
+            border: 1px solid #e74c3c;
+            border-radius: 4px;
+            padding: 0 3px;
+            transition: all 0.2s;
+        }
+        .citation a:hover {
+            background-color: #e74c3c;
+            color: white;
         }
     </style>
 </head>
@@ -171,24 +244,138 @@
         <button onclick="nextCard()">Suivant →</button>
     </div>
 
+    <div class="controls">
+        <button class="btn-summary" onclick="openModal()">Voir le Résumé du Cours (PDF)</button>
+    </div>
+
+    <div id="summaryModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div class="summary-text" id="summaryContainer">
+                <h2>Chapitre 8 : Le Fonctionnement des Universités</h2>
+                <p><em>Cliquez sur les numéros rouges pour ouvrir le PDF à la bonne page.</em></p>
+
+                <h3>I. Les institutions universitaires : Une organisation collective</h3>
+                <p>L'université médiévale est une tension entre la recherche de "libertés" (privilèges) <span class="citation" data-id="3"></span> et les contraintes nées de l'organisation collective (statuts) <span class="citation" data-id="4"></span>.</p>
+
+                <h4>1. Le modèle parisien (Université de maîtres)</h4>
+                <ul>
+                    <li><strong>Structure :</strong> Ce n'est pas un bâtiment, mais une association d'écoles <span class="citation" data-id="15"></span>. L'étudiant s'inscrit chez un maître vers 15 ans <span class="citation" data-id="16"></span>.</li>
+                    <li><strong>Les 4 Facultés :</strong> Arts libéraux (la plus grande), Droit canon, Médecine, Théologie (le Droit romain est interdit à Paris) <span class="citation" data-id="20"></span>.</li>
+                    <li><strong>Les Nations (Faculté des Arts) :</strong> Les étudiants et maîtres sont divisés en 4 nations (anglaise, normande, picarde, française) <span class="citation" data-id="23"></span>. Chaque nation élit un <strong>procureur</strong> <span class="citation" data-id="25"></span>.</li>
+                    <li><strong>Gouvernance :</strong> Les procureurs élisent un <strong>Recteur</strong> (chef de la faculté des Arts et dirigeant de fait de l'université) pour un mandat très court (quelques mois) <span class="citation" data-id="27"></span>.</li>
+                </ul>
+
+                <h4>2. Le modèle d'Oxford</h4>
+                <ul>
+                    <li><strong>Différence :</strong> Les nations sont quasi inexistantes (seulement deux) et il n'y a pas de recteur <span class="citation" data-id="35"></span>.</li>
+                    <li><strong>Autorité :</strong> Le pouvoir réside dans le conseil des maîtres régents. Le chef est le <strong>Chancelier</strong>, nommé par l'évêque mais choisi par les maîtres <span class="citation" data-id="37"></span>.</li>
+                </ul>
+
+                <h4>3. Le modèle de Bologne (Université d'étudiants)</h4>
+                <ul>
+                    <li><strong>Spécificité :</strong> C'est une université dirigée par les étudiants, où le rôle des écoles est moins central <span class="citation" data-id="39"></span>.</li>
+                    <li><strong>Division :</strong> Deux universités distinctes, les <em>Ultramontains</em> (14 nations) et les <em>Citramontains</em> (3 nations) <span class="citation" data-id="41"></span>.</li>
+                    <li><strong>Gouvernance :</strong> Chaque nation élit un <strong>procurateur</strong> (étudiant) <span class="citation" data-id="44"></span>. À la tête de l'université, un <strong>Recteur</strong> (étudiant) est élu pour un an <span class="citation" data-id="46"></span>.</li>
+                    <li><strong>Les docteurs :</strong> Ils forment un "collège" à part pour défendre leurs intérêts face aux étudiants qui les emploient <span class="citation" data-id="50"></span>.</li>
+                </ul>
+
+                <hr>
+
+                <h3>II. Un enseignement encadré : Méthodes et Programmes</h3>
+                <p>Contrairement au XIIe siècle, l'enseignement est désormais strictement encadré par des programmes et des statuts <span class="citation" data-id="55"></span>.</p>
+
+                <h4>1. Les exercices</h4>
+                <ul>
+                    <li><strong>La <em>Lectio</em> (matin) :</strong> Lecture continue et commentée d'un ouvrage faisant autorité <span class="citation" data-id="58"></span>.</li>
+                    <li><strong>La <em>Disputatio</em> (après-midi) :</strong> Exercice de débat sur une question (oui/non) où le maître finit par donner la solution (<em>determinatio</em>) <span class="citation" data-id="70"></span>.</li>
+                </ul>
+
+                <h4>2. Les corpus de textes par faculté</h4>
+                <ul>
+                    <li><strong>Arts :</strong> Massivement les œuvres d'<strong>Aristote</strong> (philosophie) <span class="citation" data-id="61"></span>.</li>
+                    <li><strong>Médecine :</strong> L'<em>Articella</em> (textes arabes, byzantins, etc.) et <strong>Avicenne</strong> <span class="citation" data-id="63"></span>.</li>
+                    <li><strong>Droit Canon :</strong> Le <em>Décret</em> de Gratien <span class="citation" data-id="64"></span>.</li>
+                    <li><strong>Droit Romain :</strong> Le <em>Code Justinien</em> <span class="citation" data-id="65"></span>.</li>
+                    <li><strong>Théologie :</strong> La Bible et le <em>Livre des Sentences</em> de Pierre Lombard <span class="citation" data-id="66"></span>.</li>
+                </ul>
+
+                <hr>
+
+                <h3>III. Cursus et Examens</h3>
+                <p>L'étudiant suit un parcours progressif codifié, débutant vers 15 ans à la faculté des Arts (préparatoire aux autres) <span class="citation" data-id="83"></span>.</p>
+
+                <ol>
+                    <li><strong>Le Baccalauréat (après ~4 ans) :</strong>
+                        <ul>
+                            <li>Examen privé devant des maîtres puis épreuve publique où l'étudiant "détermine" dans l'école de son maître <span class="citation" data-id="87"></span>.</li>
+                            <li>Il devient <em>bachelier</em> (<em>dominus</em>) et peut assister son maître <span class="citation" data-id="92"></span>.</li>
+                        </ul>
+                    </li>
+                    <li><strong>La Licence (après +2 ans) :</strong>
+                        <ul>
+                            <li>Examen approfondi devant le chancelier et des maîtres. Confère la <em>licencia docendi</em> (droit d'enseigner) <span class="citation" data-id="96"></span>.</li>
+                        </ul>
+                    </li>
+                    <li><strong>L'Inceptio / Doctorat (le lendemain) :</strong>
+                        <ul>
+                            <li>Cérémonie publique et festive (banquet, remise des insignes : livre, anneau, barrette). L'étudiant devient <strong>Maître ès-arts</strong> <span class="citation" data-id="99"></span>.</li>
+                        </ul>
+                    </li>
+                </ol>
+                <p><em>Pour les facultés supérieures (Droit, Médecine, Théologie), le cycle recommence pour une durée de 6 à 8 ans <span class="citation" data-id="101"></span>.</em></p>
+
+                <hr>
+
+                <h3>IV. L'autonomie universitaire face aux pouvoirs</h3>
+                <p>L'autonomie est une lutte constante contre les pouvoirs laïcs et religieux <span class="citation" data-id="112"></span>.</p>
+
+                <h4>1. Face aux pouvoirs séculiers (Rois, Empereurs, Villes)</h4>
+                <p>Globalement, ces pouvoirs soutiennent les universités (ex: privilège de Philippe Auguste en <strong>1200</strong>, Henri III à Oxford) <span class="citation" data-id="120"></span>.</p>
+                <ul>
+                    <li><strong>Limites de l'autonomie :</strong>
+                        <ul>
+                            <li><strong>1224 :</strong> Frédéric II fonde l'université de Naples sous strict contrôle de l'État <span class="citation" data-id="126"></span>.</li>
+                            <li><strong>1256 :</strong> Louis IX (Saint Louis) exile le maître Guillaume de Saint-Amour <span class="citation" data-id="127"></span>.</li>
+                            <li><strong>1303 :</strong> Philippe le Bel force l'université à soutenir sa politique hostile contre le pape Boniface VIII <span class="citation" data-id="128"></span>.</li>
+                            <li><strong>Bologne :</strong> Dès le XIVe s., la commune finance les salaires et contrôle davantage l'université <span class="citation" data-id="118"></span>.</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h4>2. Face aux pouvoirs ecclésiastiques (Évêques)</h4>
+                <p>Le conflit porte souvent sur la délivrance de la <em>licencia docendi</em> <span class="citation" data-id="138"></span>.</p>
+                <ul>
+                    <li><strong>Paris :</strong> Conflit violent évêque/maîtres. L'évêque Étienne Tempier censure des propositions universitaires en <strong>1270</strong> et <strong>1277</strong> <span class="citation" data-id="143"></span>.</li>
+                    <li><strong>Oxford & Montpellier :</strong> Relations plus apaisées car l'évêque est éloigné. À Oxford, le Chancelier (ex: Grosseteste) finit par protéger l'autonomie des maîtres <span class="citation" data-id="148"></span>.</li>
+                    <li><strong>Bologne :</strong> Conflits possibles, ex: bagarre en <strong>1270</strong> dans une église entre docteurs (gibelins) et chanoines (guelfes) <span class="citation" data-id="150"></span>.</li>
+                </ul>
+
+                <h4>3. Face à la Papauté</h4>
+                <p>Le pape soutient l'université pour étendre sa juridiction et contrôler le savoir <span class="citation" data-id="156"></span>.</p>
+                <ul>
+                    <li>Il octroie des statuts (<strong>1215</strong> à Paris, <strong>1220</strong> à Montpellier) <span class="citation" data-id="157"></span>.</li>
+                    <li>Il contrôle les maîtres via les <strong>bénéfices ecclésiastiques</strong> (revenus) <span class="citation" data-id="160"></span>.</li>
+                    <li><em>Exemple de soumission :</em> En <strong>1290</strong>, le légat Benoît Caetani (futur Boniface VIII) menace de retirer leurs revenus aux maîtres parisiens s'ils continuent de s'opposer aux privilèges des frères mendiants. Les maîtres cèdent immédiatement <span class="citation" data-id="165"></span>.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Données hardcodées (issues de la conversation précédente)
+        // --- DONNÉES FLASHCARDS ---
         const data = [
-            // 1. Contexte et Évolution de l'Église
+            // (J'ai gardé les mêmes questions que précédemment pour ne pas surcharger le code ici, elles sont incluses dans le script)
             { category: "Contexte & Église", q: "Qui a introduit le terme 'intellectuel' pour parler du Moyen Âge ?", a: "C'est l'historien Jacques Le Goff, bien que le mot n'existait pas à l'époque." },
             { category: "Contexte & Église", q: "Quelle est l'évolution démographique de l'Europe entre le 11e et le 13e siècle ?", a: "La population a doublé, passant de 25-40 millions à 60-80 millions." },
             { category: "Contexte & Église", q: "Quels sont les deux objectifs principaux de la Réforme Grégorienne ?", a: "Distinguer les clercs des laïcs (célibat) et affirmer la supériorité du pouvoir spirituel sur le temporel." },
             { category: "Contexte & Église", q: "Comment le mode d'élection du pape change-t-il au 11e siècle ?", a: "Il n'est plus choisi par l'aristocratie locale mais élu par les cardinaux (interne à l'Église)." },
             { category: "Contexte & Église", q: "Qu'est-ce que la théocratie pontificale ?", a: "Un système où l'autorité du pape prime, s'appuyant sur le divin pour contrôler les affaires terrestres." },
-            
-            // 2. Le Monde Monastique et les Écoles
             { category: "Monastères & Écoles", q: "Quelles sont les disciplines du Trivium ?", a: "Les disciplines littéraires : grammaire, rhétorique, dialectique/logique." },
             { category: "Monastères & Écoles", q: "Quelles sont les disciplines du Quadrivium ?", a: "La science des nombres : géométrie, musique, astronomie, arithmétique." },
             { category: "Monastères & Écoles", q: "Pourquoi les monastères (comme Cîteaux) ferment-ils leurs écoles externes au 12e siècle ?", a: "Dans un esprit de renoncement au monde, ils refusent les enfants ('oblats') et se replient sur eux-mêmes." },
             { category: "Monastères & Écoles", q: "Qui est Hildegarde de Bingen ?", a: "Une abbesse allemande du 12e siècle, reconnue pour ses savoirs encyclopédiques (médecine, musique, visions)." },
             { category: "Monastères & Écoles", q: "Quelle est la méthode d'Anselme de Canterbury dans 'La foi en quête de la raison' ?", a: "Il utilise la logique pure pour essayer de prouver l'existence de Dieu." },
-
-            // 3. Les Écoles Urbaines et le Savoir
             { category: "Écoles Urbaines", q: "Quels sont les 3 types d'écoles urbaines au 12e siècle ?", a: "Les écoles cathédrales (évêque), les écoles canoniales (chanoines) et les écoles privées (maîtres indépendants)." },
             { category: "Écoles Urbaines", q: "Qu'est-ce que la Licentia Docendi ?", a: "L'autorisation d'enseigner délivrée par le chancelier ou l'évêque, obligatoire dès 1179." },
             { category: "Écoles Urbaines", q: "Qui a écrit le 'Décret' (base du droit canonique) ?", a: "Gratien, qui a compilé et concordé les textes contradictoires." },
@@ -197,8 +384,6 @@
             { category: "Écoles Urbaines", q: "Pourquoi Daniel Morley se rend-il à Tolède plutôt qu'à Paris ?", a: "Pour trouver les textes arabes et grecs (Aristote), jugeant les maîtres de Paris prétentieux et ignorants." },
             { category: "Écoles Urbaines", q: "Qu'est-ce qu'une Madrasa ?", a: "Un collège d'enseignement supérieur dans le monde musulman, souvent une institution privée." },
             { category: "Écoles Urbaines", q: "Qui est Rashi ?", a: "Un savant juif de Troyes (11e s.) célèbre pour ses commentaires de la Torah et du Talmud." },
-
-            // 4. Naissance des Universités
             { category: "Universités", q: "Que signifie le mot Universitas à l'origine ?", a: "Une association ou corporation autonome (de métiers, de maîtres ou d'étudiants)." },
             { category: "Universités", q: "Quelle est la particularité de l'Université de Bologne ?", a: "C'est une université d'étudiants : ce sont eux qui dirigent, embauchent les maîtres et gèrent l'organisation." },
             { category: "Universités", q: "Qu'est-ce que le privilège 'Habita' (1158) ?", a: "L'empereur Frédéric 1er accorde une protection spéciale aux étudiants de Bologne (justice de l'Église)." },
@@ -209,16 +394,12 @@
             { category: "Universités", q: "Pourquoi la naissance de l'Université d'Oxford est-elle atypique ?", a: "Elle n'avait ni école cathédrale ni monastère préexistants; elle s'est formée par un rassemblement informel." },
             { category: "Universités", q: "Quelle est la différence entre un Studium et une Université ?", a: "Un Studium est un centre d'étude créé par une autorité sans l'autonomie corporative d'une université." },
             { category: "Universités", q: "Quelle université espagnole est fondée par le roi Alphonse X en 1218 ?", a: "L'Université de Salamanque." },
-
-            // 5. Débats & Société
             { category: "Débats & Société", q: "Qu'est-ce qu'une Disputatio ?", a: "Un débat scolastique structuré avec arguments 'pour' et 'contre', animé par le maître." },
             { category: "Débats & Société", q: "Qu'est-ce que la Determinatio ?", a: "La synthèse finale et la solution donnée par le maître à la fin d'une dispute." },
             { category: "Débats & Société", q: "Quels sont les deux types d'arguments utilisés dans les débats ?", a: "L'Autorité (Bible, Pères de l'Église, Aristote) et la Raison (logique)." },
             { category: "Débats & Société", q: "Pourquoi l'usure (prêt à intérêt) est-elle condamnée par les théologiens ?", a: "Car c'est vendre le temps, or le temps appartient à Dieu ('Le temps est à Dieu')." },
             { category: "Débats & Société", q: "Qu'est-ce que la 'pauvreté volontaire' ?", a: "Se dépouiller de ses biens pour des raisons spirituelles, distinguée de la pauvreté subie." },
             { category: "Débats & Société", q: "Comment les maîtres interviennent-ils dans la politique (ex: Louis IX) ?", a: "Ils deviennent des experts consultés pour légitimer des décisions (guerre juste, Talmud, etc.)." },
-
-            // 6. Figures Clés
             { category: "Figures Clés", q: "Qui est Pierre Abélard (1079-1142) ?", a: "Maître de logique à Paris, connu pour sa méthode dialectique (Sic et Non) et son histoire avec Héloïse." },
             { category: "Figures Clés", q: "Qui est Hugues de Saint-Victor ?", a: "Un maître parisien célèbre pour sa pédagogie visuelle et son ouvrage Didascalicon." },
             { category: "Figures Clés", q: "Qu'est-ce que la 'Glose ordinaire' ?", a: "Le commentaire biblique standard du Moyen Âge, élaboré par Anselme de Laon." },
@@ -234,13 +415,43 @@
         const categoryFront = document.getElementById('category-front');
         const categoryBack = document.getElementById('category-back');
         const progressText = document.getElementById('progress-text');
+        const modal = document.getElementById("summaryModal");
 
+        // --- GESTION DES LIENS PDF ---
+        // Nom du fichier PDF (à modifier si besoin)
+        const PDF_FILENAME = "cours_chap8.pdf";
+
+        // Fonction pour déterminer la page en fonction de l'ID source
+        // Basé sur le découpage du PDF fourni :
+        // Page 1: sources 1-30 | Page 2: 31-54 | Page 3: 55-84 | Page 4: 85-113 | Page 5: 114-137 | Page 6: 138-162 | Page 7: 163+
+        function getPageFromSourceId(id) {
+            id = parseInt(id);
+            if (id <= 30) return 1;
+            if (id <= 54) return 2;
+            if (id <= 84) return 3;
+            if (id <= 113) return 4;
+            if (id <= 137) return 5;
+            if (id <= 162) return 6;
+            return 7;
+        }
+
+        // Initialisation des liens au chargement
+        document.addEventListener('DOMContentLoaded', () => {
+            const citations = document.querySelectorAll('.citation');
+            citations.forEach(cit => {
+                const id = cit.getAttribute('data-id');
+                if (id) {
+                    const page = getPageFromSourceId(id);
+                    // Création du lien vers le PDF avec ancre #page=X
+                    cit.innerHTML = `<a href="${PDF_FILENAME}#page=${page}" target="_blank" title="Ouvrir le PDF à la page ${page}"></a>`;
+                }
+            });
+            updateCard();
+        });
+
+        // --- FONCTIONS FLASHCARDS ---
         function updateCard() {
-            // Enlever la classe flipped pour revenir au recto
             cardElement.classList.remove('is-flipped');
-            
-            // Attendre un tout petit peu que la carte se retourne avant de changer le texte pour éviter le spoiler
-            // Si on change de carte (next/prev), on veut voir la question immédiatement
             setTimeout(() => {
                 const item = data[currentIndex];
                 questionText.textContent = item.q;
@@ -259,7 +470,7 @@
             if (currentIndex < data.length - 1) {
                 currentIndex++;
             } else {
-                currentIndex = 0; // Boucle au début
+                currentIndex = 0;
             }
             updateCard();
         }
@@ -268,16 +479,33 @@
             if (currentIndex > 0) {
                 currentIndex--;
             } else {
-                currentIndex = data.length - 1; // Boucle à la fin
+                currentIndex = data.length - 1;
             }
             updateCard();
         }
 
-        // Initialisation
-        updateCard();
+        // --- FONCTIONS MODAL ---
+        function openModal() {
+            modal.style.display = "block";
+            document.body.style.overflow = "hidden"; 
+        }
 
-        // Support flèches clavier
+        function closeModal() {
+            modal.style.display = "none";
+            document.body.style.overflow = "auto";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
         document.addEventListener('keydown', (e) => {
+            if(modal.style.display === "block") {
+                if(e.key === "Escape") closeModal();
+                return;
+            }
             if (e.key === 'ArrowRight') nextCard();
             if (e.key === 'ArrowLeft') prevCard();
             if (e.key === ' ' || e.key === 'Enter') flipCard();
