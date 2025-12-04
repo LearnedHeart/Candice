@@ -33,6 +33,109 @@
             font-size: 1.8rem;
         }
 
+        /* --- TABS STYLES --- */
+        .tabs-container {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background-color: transparent;
+            color: var(--primary-color);
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            box-shadow: none;
+        }
+
+        .tab:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+
+        .tab.active {
+            border-bottom-color: var(--accent-color);
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+            width: 100%;
+            animation: fadeIn 0.3s;
+        }
+
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* --- CM BUTTONS & FICHES --- */
+        .cm-button {
+            background-color: var(--primary-color);
+            padding: 10px 20px;
+            font-size: 0.95rem;
+        }
+
+        .cm-button:hover {
+            background-color: #34495e;
+        }
+
+        .cm-button.active {
+            background-color: var(--secondary-accent);
+        }
+
+        .cm-fiche {
+            display: none;
+            width: 100%;
+            animation: fadeIn 0.3s;
+        }
+
+        .cm-fiche.active-fiche {
+            display: flex;
+            justify-content: center;
+        }
+
+        /* --- MODE CONTAINER (FICHES / FLASHCARDS) --- */
+        .mode-container {
+            display: none;
+            width: 100%;
+        }
+
+        .mode-container.active-mode {
+            display: block;
+        }
+
+        .mode-button {
+            background-color: var(--primary-color);
+            padding: 10px 20px;
+            font-size: 0.95rem;
+        }
+
+        .mode-button:hover {
+            background-color: #34495e;
+        }
+
+        .mode-button.active {
+            background-color: var(--accent-color);
+        }
+
         /* --- FLASHCARD STYLES --- */
         .scene {
             width: 600px;
@@ -84,6 +187,12 @@
             transform: rotateY(180deg);
             border: 2px solid var(--primary-color);
         }
+
+        /* Fonds différents pour Histoire de l'Art vs Histoire */
+        .card__face--front.art-history { background-color: #fef9f3; }
+        .card__face--back.art-history { background-color: #c77d4f; }
+        .card__face--front.history { background-color: #f3f8fe; }
+        .card__face--back.history { background-color: #4a7ba7; }
 
         .category-tag {
             position: absolute;
@@ -142,6 +251,49 @@
             font-weight: bold;
             color: var(--primary-color);
             min-width: 80px;
+            text-align: center;
+        }
+
+        /* --- PDF VIEWER STYLES --- */
+        .pdf-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+        }
+
+        .pdf-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .pdf-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .pdf-card h3 {
+            color: var(--primary-color);
+            margin: 0 0 10px 0;
+            font-size: 1.1rem;
+        }
+
+        .pdf-card p {
+            color: #666;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .pdf-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            display: block;
             text-align: center;
         }
 
@@ -222,7 +374,19 @@
 </head>
 <body>
 
-    <h1>Révisions Histoire Intellectuelle (L2)</h1>
+    <h1>Révisions L2</h1>
+
+    <!-- Onglets -->
+    <div class="tabs-container">
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('histoireIntellectuelle')">Histoire Intellectuelle</button>
+            <button class="tab" onclick="switchTab('histoireArt')">Histoire de l'art et archéologie de l'antiquité</button>
+        </div>
+    </div>
+
+    <!-- Contenu Histoire Intellectuelle -->
+    <div id="histoireIntellectuelle" class="tab-content active">
+        <h2 style="color: var(--primary-color); margin-bottom: 20px;">Histoire Intellectuelle (L2)</h2>
 
     <div class="scene" onclick="flipCard()">
         <div class="card" id="flashcard">
@@ -246,6 +410,543 @@
 
     <div class="controls">
         <button class="btn-summary" onclick="openModal()">Voir le Résumé du Cours (PDF)</button>
+    </div>
+
+    </div>
+
+    <!-- Contenu Histoire de l'art et archéologie de l'antiquité -->
+    <div id="histoireArt" class="tab-content">
+        <h2 style="color: var(--primary-color); margin-bottom: 20px;">Histoire de l'art et archéologie de l'antiquité</h2>
+        
+        <!-- Toggle Fiches / Flashcards -->
+        <div class="controls" style="margin-bottom: 20px;">
+            <button class="mode-button active" onclick="switchMode('fiches')">📚 Fiches de révision</button>
+            <button class="mode-button" onclick="switchMode('flashcards')">🎴 Flashcards</button>
+        </div>
+
+        <!-- Conteneur Fiches -->
+        <div id="fiches-container" class="mode-container active-mode">
+        
+        <!-- Boutons de navigation entre les CM -->
+        <div class="controls" style="margin-bottom: 30px;">
+            <button class="cm-button active" onclick="showCM(1)">CM 1</button>
+            <button class="cm-button" onclick="showCM(2)">CM 2</button>
+            <button class="cm-button" onclick="showCM(3)">CM 3</button>
+            <button class="cm-button" onclick="showCM(4)">CM 4</button>
+            <button class="cm-button" onclick="showCM(5)">CM 5</button>
+            <button class="cm-button" onclick="showCM(6)">CM 6</button>
+            <button class="cm-button" onclick="showCM(7)">CM 7</button>
+            <button class="cm-button" onclick="showCM(8)">CM 8</button>
+            <button class="cm-button" onclick="showCM(9)">CM 9</button>
+            <button class="cm-button" onclick="showCM(10)">CM 10</button>
+            <button class="cm-button" onclick="showCM(11)">📅 Dates</button>
+        </div>
+
+        <!-- Fiche CM 1 -->
+        <div id="cm1" class="cm-fiche active-fiche">
+            <div style="max-width: 800px; text-align: left; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h2 style="color: var(--secondary-accent); border-bottom: 2px solid #eee; padding-bottom: 10px;">🏛️ CM 1 - Introduction & La Rome Archaïque</h2>
+                <p style="font-style: italic; color: #666; margin-bottom: 20px;">Thème : Les origines de Rome, du site géographique à la République.</p>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">1. Le cadre géographique et les origines</h3>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Site :</strong> Rome est une cité du Latium, au cœur de la péninsule italienne, située sur le Tibre à 30 km de la mer.</li>
+                    <li><strong>Topographie :</strong> Le site est marqué par des collines (Capitole, Palatin, Aventin, etc.) et des zones basses marécageuses (Vélabre, futur Forum).</li>
+                    <li><strong>Fondation :</strong>
+                        <ul>
+                            <li><em>Légende :</em> 753 av. J.-C. par Romulus (descendant d'Énée et d'Ascagne/Iule).</li>
+                            <li><em>Archéologie :</em> Occupation humaine attestée dès le milieu du VIIIe s. av. J.-C. (fonds de cabanes sur le Palatin, tombes).</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">2. La Royauté (753 - 509 av. J.-C.)</h3>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Les Rois :</strong> Succession de 7 rois, alternant Latins, Sabins et Étrusques (Tarquins).</li>
+                    <li><strong>L'urbanisme des Tarquins (VIe s. av. J.-C.) :</strong> C'est la première grande phase d'urbanisme.</li>
+                    <li><strong>Le Temple de Jupiter Capitolin :</strong> Voué en 580 av. J.-C., inauguré en 509 av. J.-C. (première année de la République). Type étrusco-italique (toscan) : plan presque carré, podium élevé, accès frontal, trois cellae (Jupiter, Junon, Minerve).</li>
+                    <li><strong>La Muraille Servienne :</strong> Attribuée au roi Servius Tullius mais archéologiquement datée du IVe s. (après le sac gaulois de 390 av. J.-C.). Elle délimite l'Urbs et le pomerium (limite sacrée).</li>
+                    <li><strong>Cloaca Maxima :</strong> Grand égout permettant d'assainir la zone du forum.</li>
+                </ul>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">3. La République (509 - 27 av. J.-C.)</h3>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Institutions :</strong> Le pouvoir est partagé entre le Sénat (contrôle politique et financier), les Magistrats (élus, annuels, collégiaux) et les Comices (assemblées du peuple).</li>
+                    <li><strong>Le Cursus Honorum :</strong> Hiérarchie des magistratures (Questeur → Édile → Préteur → Consul → Censeur).</li>
+                    <li><strong>L'évergétisme :</strong> Les magistrats doivent dépenser leur argent personnel pour embellir la ville en échange de l'honneur reçu.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Fiche CM 2-3 -->
+        <div id="cm2" class="cm-fiche">
+            <div style="max-width: 800px; text-align: left; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h2 style="color: var(--secondary-accent); border-bottom: 2px solid #eee; padding-bottom: 10px;">🏗️ CM 2 - Le IIe siècle av. J.-C. (1)</h2>
+                <p style="font-style: italic; color: #666; margin-bottom: 20px;">Thème : L'urbanisme, les techniques de construction et l'hellénisation de l'architecture.</p>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">I. Le Contexte : Une ville en mutation</h3>
+                <ul style="line-height: 1.8;">
+                    <li><strong>L'impact des conquêtes :</strong> Rome devient la capitale d'un empire méditerranéen. L'afflux de richesses (manubiae = butin) et le contact avec la Grèce transforment la ville.</li>
+                    <li><strong>Tensions idéologiques :</strong> Opposition entre les conservateurs (Caton l'Ancien, défenseur du <em>mos maiorum</em> et de l'austérité) et les philhellènes (Scipion Émilien, favorable au luxe et à la culture grecque, la <em>luxuria</em>).</li>
+                    <li><strong>Conséquence :</strong> Rome doit se doter d'équipements dignes de son nouveau rang (portiques, temples en marbre, entrepôts).</li>
+                </ul>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">II. La Révolution Architecturale : Matériaux et Techniques</h3>
+                <p style="line-height: 1.8;">L'architecture romaine se détache du modèle étrusco-italique traditionnel grâce à de nouvelles techniques.</p>
+                
+                <h4 style="color: var(--primary-color); margin-top: 20px;">1. Les matériaux traditionnels :</h4>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Le tuf (pierre volcanique) :</strong> Tuf de Grotta Oscura (jaunâtre, poreux), tuf de l'Anio (plus dur), tuf de Monteverde.</li>
+                    <li><strong>Le travertin :</strong> Calcaire dur, blanc, imite le marbre.</li>
+                </ul>
+
+                <h4 style="color: var(--primary-color); margin-top: 20px;">2. L'innovation majeure : L'Opus Caementicium (Le "béton romain")</h4>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Composition :</strong> Mélange de chaux, de sable (notamment la pouzzolane), d'eau et de cailloux (caementa).</li>
+                    <li><strong>Avantages :</strong> Permet de construire vite, grand, solide, et surtout de réaliser des voûtes et des coupoles (architecture de l'espace intérieur).</li>
+                    <li><strong>Les parements (ce qui recouvre le béton) :</strong>
+                        <ul>
+                            <li><em>Opus incertum :</em> Pierres irrégulières (IIe - déb. Ier s. av. J.-C.).</li>
+                            <li><em>Opus quasi-reticulatum :</em> Transition, pierres un peu plus régulières.</li>
+                            <li><em>Opus reticulatum :</em> Pierres taillées en losanges réguliers (fin République, ap. 70-50 av. J.-C.).</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">III. Les Monuments Clés du CM 2</h3>
+                
+                <h4 style="color: var(--primary-color); margin-top: 20px;">A. L'architecture utilitaire : La Porticus Aemilia</h4>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Date :</strong> 193 av. J.-C. (construction) / 174 av. J.-C. (restauration).</li>
+                    <li><strong>Lieu :</strong> Quartier de l'Emporium (port fluvial au sud de l'Aventin).</li>
+                    <li><strong>Fonction :</strong> Immense entrepôt (navalia) pour stocker les denrées.</li>
+                    <li><strong>Architecture :</strong> Gigantesque (487×60 m). Utilisation magistrale de l'opus caementicium pour créer des nefs voûtées en gradins descendant vers le Tibre.</li>
+                </ul>
+
+                <h4 style="color: var(--primary-color); margin-top: 20px;">B. L'architecture de prestige : Le Portique de Metellus</h4>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Date :</strong> 146 av. J.-C. (après la victoire sur la Macédoine).</li>
+                    <li><strong>Commanditaire :</strong> Q. Caecilius Metellus Macedonicus.</li>
+                    <li><strong>Innovation :</strong> Premier temple entièrement en marbre à Rome (Temple de Jupiter Stator).</li>
+                    <li><strong>Architecte :</strong> Un Grec, Hermodoros de Salamine.</li>
+                    <li><strong>Décor :</strong> Renferme la <em>Turma Alexandri</em> (groupe de statues équestres d'Alexandre le Grand réalisé par Lysippe, volé en Grèce).</li>
+                </ul>
+
+                <h4 style="color: var(--primary-color); margin-top: 20px;">C. Le Forum Boarium (Marché aux bœufs)</h4>
+                <p style="line-height: 1.8;">Zone de commerce intense où se mêlent influences grecques et romaines.</p>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Temple rond (dit d'Hercule Olivarius) :</strong>
+                        <ul>
+                            <li><em>Date :</em> Fin IIe s. av. J.-C.</li>
+                            <li><em>Style :</em> Tholos (temple rond) périptère, en marbre pentélique. Style purement grec.</li>
+                            <li><em>Architecte probable :</em> Hermodoros de Salamine.</li>
+                            <li><em>Dédicant :</em> M. Octavius Herrenus (un riche marchand romain, enrichi par le commerce d'huile).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Temple de Portunus (dit de la Fortune Virile) :</strong>
+                        <ul>
+                            <li><em>Date :</em> Fin IIe s. / début Ier s. av. J.-C.</li>
+                            <li><em>Style :</em> Pseudo-périptère. C'est un mélange (éclectisme) : plan italique (podium, escalier frontal) + ordre ionique grec (colonnes) + colonnes engagées dans le mur de la cella (d'où "pseudo"-périptère).</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Fiche CM 3 -->
+        <div id="cm3" class="cm-fiche">
+            <div style="max-width: 800px; text-align: left; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h2 style="color: var(--secondary-accent); border-bottom: 2px solid #eee; padding-bottom: 10px;">🎨 CM 3 - Le IIe siècle av. J.-C. (2)</h2>
+                <p style="font-style: italic; color: #666; margin-bottom: 20px;">Thème : La sculpture, l'art figuré et le "réalisme" romain.</p>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">I. Le contexte artistique : Le butin (Manubiae)</h3>
+                <ul style="line-height: 1.8;">
+                    <li>Rome pille les œuvres d'art grecques (Syracuse 212, Corinthe 146). Horace dit : "La Grèce conquise a conquis son farouche vainqueur".</li>
+                    <li><strong>Conséquence :</strong> Naissance de collectionneurs romains et mélange des styles.</li>
+                </ul>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">II. Étude de cas : "L'Autel" de Domitius Ahenobarbus</h3>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Nature :</strong> Ce n'est pas un autel, mais une grande base rectangulaire (statues de culte ?).</li>
+                    <li><strong>Date :</strong> Fin du IIe s. av. J.-C. (vers 115-100 ?).</li>
+                    <li><strong>Particularité :</strong> Exemple parfait de l'éclectisme romain (juxtaposition de deux styles opposés sur le même monument).
+                        <ul>
+                            <li><em>Face A, B, C (Musée de Munich) :</em> Style hellénistique (grec). Représente les Noces de Neptune et Amphitrite (Thiasos marin). Marbre, mouvement, style baroque.</li>
+                            <li><em>Face D (Musée du Louvre) :</em> Style romain ("art plébéien"). Représente une scène historique/civique : le Censeur pratiquant le Census (recensement) et le sacrifice du Suovétaurile (porc, bélier, taureau) au dieu Mars.</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">III. L'Area Sacra du Largo Argentina</h3>
+                <ul style="line-height: 1.8;">
+                    <li>Complexe de 4 temples républicains (A, B, C, D) découverts au cœur de Rome.</li>
+                    <li><strong>Focus sur le Temple B (Aedes Fortunae Huiusce Diei) :</strong>
+                        <ul>
+                            <li><em>Date :</em> Voué en 101 av. J.-C. par Q. Lutatius Catulus (victoire de Vercelles).</li>
+                            <li><em>Forme :</em> Tholos (temple rond) sur haut podium.</li>
+                            <li><em>Statue de culte :</em> Une statue acrolithe colossale (8m de haut). Les parties visibles (tête, bras, pieds) sont en marbre, le reste était en structure cachée par des vêtements. Le visage est idéalisé (style grec classique), attribué peut-être à Skopas le Jeune.</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">IV. L'Art du Portrait : Entre idéalisme et vérisme</h3>
+                <p style="line-height: 1.8;">Au IIe siècle, le portrait romain naît de la rencontre entre :</p>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Le fond traditionnel romain :</strong> Les masques funéraires en cire (<em>imagines majorum</em>, très réalistes).</li>
+                    <li><strong>L'art hellénistique :</strong> Expression du pathétique et de la puissance.</li>
+                </ul>
+
+                <h4 style="color: var(--primary-color); margin-top: 20px;">Exemples clés :</h4>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Le "Pseudo-Athlète" de Délos (v. 80 av. J.-C.) :</strong>
+                        <ul>
+                            <li>Contraste saisissant : Une tête réaliste (homme d'âge mûr, traits marqués, calvitie = <em>auctoritas</em> romaine) posée sur un corps d'athlète nu, jeune et idéalisé (héroïsation à la grecque).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Le Général de Tivoli (v. 75-50 av. J.-C.) :</strong>
+                        <ul>
+                            <li>Statue en marbre. Tête très réaliste (rides, âge) sur un corps semi-nu (héroïsé) mais avec une cuirasse servant de support (rappel de la fonction militaire).</li>
+                            <li>C'est un portrait "vériste" : on accentue les défauts pour montrer la sévérité (<em>gravitas</em>) et l'expérience du magistrat.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Fiche CM 4 -->
+        <div id="cm4" class="cm-fiche">
+            <div style="max-width: 800px; text-align: left; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h2 style="color: var(--secondary-accent); border-bottom: 2px solid #eee; padding-bottom: 10px;">⚔️ CM 4 - La Rome des Imperatores (Ier s. av. J.-C.)</h2>
+                <p style="font-style: italic; color: #666; margin-bottom: 20px;">Thème : La crise de la République et l'utilisation de l'urbanisme pour la gloire personnelle.</p>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">1. Le contexte politique</h3>
+                <ul style="line-height: 1.8;">
+                    <li>Affrontement entre <strong>Optimates</strong> (conservateurs, ex: Sylla) et <strong>Populares</strong> (réformateurs, ex: Marius, César).</li>
+                    <li>Les généraux victorieux (<em>imperatores</em>) utilisent l'architecture pour leur propagande personnelle.</li>
+                </ul>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">2. Sylla et le Tabularium</h3>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Tabularium (78 av. J.-C.) :</strong> Construit par Q. Lutatius Catulus (partisan de Sylla) pour abriter les archives.</li>
+                    <li><strong>Innovation :</strong> Monumentalise la colline du Capitole vue du Forum. Utilisation de l'arcade encadrée de colonnes (ordre toscan/dorique).</li>
+                </ul>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">3. Pompée le Grand</h3>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Théâtre de Pompée (55 av. J.-C.) :</strong> Au Champ de Mars.
+                        <ul>
+                            <li><em>Première :</em> Premier théâtre en pierre permanent à Rome (avant, ils étaient en bois et démontables).</li>
+                            <li><em>Astuce :</em> Pour contourner l'interdiction de construire un théâtre permanent, Pompée place un temple de Vénus Victrix au sommet de la cavea (gradins). Le théâtre est officiellement un "escalier" vers le temple.</li>
+                            <li><em>Complexe :</em> Comprend un quadriportique et une curie (lieu où César sera assassiné).</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">4. Jules César</h3>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Forum de César (Forum Iulium) :</strong> Inauguré en 46 av. J.-C.
+                        <ul>
+                            <li><em>Fonction :</em> Désengorger le vieux Forum Romain et glorifier César.</li>
+                            <li><em>Architecture :</em> Place rectangulaire fermée par des portiques.</li>
+                            <li><em>Temple :</em> Vénus Genitrix (Vénus "la mère", ancêtre de la <em>gens Iulia</em> et d'Énée). Temple à abside, colonnes serrées (pycnostyle).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Interventions sur le Forum Romain :</strong>
+                        <ul>
+                            <li>Déplacement de la Curie (<em>Curia Iulia</em>) pour l'aligner sur son nouveau forum.</li>
+                            <li>Construction de la <em>Basilique Julia</em>.</li>
+                            <li>Nouveaux Rostres (tribune aux harangues).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Champ de Mars :</strong> Projet des <em>Saepta Iulia</em> (enclos de vote en marbre).</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Fiche CM 5 -->
+        <div id="cm4" class="cm-fiche">
+            <div style="max-width: 800px; text-align: left; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h2 style="color: var(--secondary-accent); border-bottom: 2px solid #eee; padding-bottom: 10px;">👑 CM 5 - La Rome d'Auguste (Introduction)</h2>
+                <p style="font-style: italic; color: #666; margin-bottom: 20px;">Thème : La transition vers le Principat.</p>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">1. Biographie et Montée au pouvoir</h3>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Origines :</strong> Né Caius Octavius (63 av. J.-C.), petit-neveu de César, adopté par lui (devient Octavien).</li>
+                    <li><strong>Guerres Civiles :</strong> Triumvirat avec Marc-Antoine et Lépide. Victoire décisive contre Marc-Antoine à Actium en 31 av. J.-C.</li>
+                </ul>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">2. Les titres et le régime</h3>
+                <ul style="line-height: 1.8;">
+                    <li><strong>27 av. J.-C. :</strong> Il reçoit le titre d'<em>Augustus</em> (Vénérable) et fonde le Principat (l'Empire).</li>
+                    <li><strong>12 av. J.-C. :</strong> Devient <em>Pontifex Maximus</em> (chef de la religion).</li>
+                    <li><strong>2 av. J.-C. :</strong> <em>Pater Patriae</em> (Père de la Patrie).</li>
+                </ul>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">3. Programme (Amorce)</h3>
+                <ul style="line-height: 1.8;">
+                    <li>Auguste veut restaurer la République en apparence mais concentre tous les pouvoirs.</li>
+                    <li><strong>Citation célèbre :</strong> "Il a trouvé une Rome de briques et a laissé une Rome de marbre" (Suétone).</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Fiche CM 6 -->
+        <div id="cm5" class="cm-fiche">
+            <div style="max-width: 800px; text-align: left; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h2 style="color: var(--secondary-accent); border-bottom: 2px solid #eee; padding-bottom: 10px;">👑 CM 6 - La Rome d'Auguste (Partie 1 : Palatin & Forum)</h2>
+                <p style="font-style: italic; color: #666; margin-bottom: 20px;">Thème : La résidence impériale et la dynasticisation du centre politique.</p>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">1. Le Palatin : La résidence d'Auguste</h3>
+                <ul style="line-height: 1.8;">
+                    <li>C'est le lieu de fondation (Romulus). Auguste s'y installe pour légitimer son pouvoir, liant son destin à celui de Rome.</li>
+                    <li><strong>Maison d'Auguste (Domus Augusti) :</strong> Achetée à l'orateur Hortensius. Modeste en apparence (refus du luxe monarchique), mais stratégiquement située à côté de la "Cabane de Romulus".</li>
+                    <li><strong>Temple d'Apollon Palatin (28 av. J.-C.) :</strong>
+                        <ul>
+                            <li>Construit dans la propriété privée d'Auguste (lien direct Dieu/Princeps).</li>
+                            <li>Voué après la victoire de Nauloque (36 av. J.-C.), inauguré après Actium.</li>
+                            <li>Célèbre la victoire sur l'Orient (Marc-Antoine/Cléopâtre). Apollon est le dieu tutélaire d'Auguste.</li>
+                            <li>Bibliothèques (grecque et latine) annexées au temple.</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">2. Le Forum Romain : L'achèvement des projets de César</h3>
+                <p style="line-height: 1.8;">Auguste termine ce que son père adoptif a commencé pour affirmer sa filiation.</p>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Curia Iulia (29 av. J.-C.) :</strong> Inauguration du nouveau sénat. Abrite l'autel de la Victoire (symbole d'Actium).</li>
+                    <li><strong>Temple du Divin Jules (Aedes Divi Iulii) (29 av. J.-C.) :</strong>
+                        <ul>
+                            <li><em>Lieu :</em> À l'emplacement du bûcher funéraire de César (côté Est du forum).</li>
+                            <li><em>Symbolique :</em> Premier temple dédié à un mortel divinisé à Rome. Marque le caractère divin de la famille d'Auguste (<em>Divi Filius</em>).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Rostres de César (Rostra Iulia) :</strong> Devant le temple, ornés des éperons des navires vaincus à Actium.</li>
+                    <li><strong>Arc (actiaque ou parthe) :</strong> Construit à côté du temple de César pour célébrer les victoires (triple triomphe de 29 av. J.-C. ou restitution des enseignes par les Parthes en 20 av. J.-C.).</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Fiche CM 7 -->
+        <div id="cm6" class="cm-fiche">
+            <div style="max-width: 800px; text-align: left; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h2 style="color: var(--secondary-accent); border-bottom: 2px solid #eee; padding-bottom: 10px;">⚔️ CM 7 - La Rome d'Auguste (Partie 2 : Forum d'Auguste)</h2>
+                <p style="font-style: italic; color: #666; margin-bottom: 20px;">Thème : La guerre, la paix et la mythologie familiale.</p>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">1. Le Forum d'Auguste (2 av. J.-C.)</h3>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Vœu :</strong> Fait en 42 av. J.-C. à la bataille de Philippes (contre les assassins de César, Brutus et Cassius).</li>
+                    <li><strong>Inauguration :</strong> 2 av. J.-C. (très long chantier).</li>
+                    <li><strong>Fonction :</strong> Soulager le Forum Romain et le Forum de César (trop petits pour les procès) + glorification militaire.</li>
+                    <li><strong>Architecture :</strong>
+                        <ul>
+                            <li>Place rectangulaire (125×118 m) flanquée de grands portiques à colonnades.</li>
+                            <li><em>Hémicycles :</em> Deux grandes exèdres semi-circulaires sur les côtés, abritant les statues des "grands hommes" (<em>summi viri</em>) de l'histoire de Rome (Énée, Romulus, Rois d'Albe, grands généraux républicains).</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">Le Temple de Mars Ultor (Vengeur)</h3>
+                <ul style="line-height: 1.8;">
+                    <li>Au fond du forum, sur un haut podium.</li>
+                    <li>Style corinthien, octostyle (8 colonnes en façade).</li>
+                    <li>Abrite les enseignes romaines reprises aux Parthes (succès diplomatique majeur d'Auguste).</li>
+                    <li><strong>Cella :</strong> Statues de Mars, Vénus (ancêtre) et divinisé Jules César (?).</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Fiche CM 8 -->
+        <div id="cm7" class="cm-fiche">
+            <div style="max-width: 800px; text-align: left; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h2 style="color: var(--secondary-accent); border-bottom: 2px solid #eee; padding-bottom: 10px;">🏛️ CM 8 - La Rome d'Auguste (Partie 3 : Le Champ de Mars)</h2>
+                <p style="font-style: italic; color: #666; margin-bottom: 20px;">Thème : L'urbanisme de loisir et la dynasticisation de l'espace public.</p>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">1. Agrippa : Le bras droit bâtisseur</h3>
+                <p style="line-height: 1.8;">Agrippa (gendre et général d'Auguste) transforme le Champ de Mars central.</p>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Panthéon (27 - 25 av. J.-C.) :</strong>
+                        <ul>
+                            <li>Premier temple "à tous les dieux" (ou à la famille impériale divinisée).</li>
+                            <li><em>Forme originale :</em> Rectangulaire (tourné vers le Sud) à l'époque d'Agrippa (le Panthéon rond actuel est une reconstruction d'Hadrien au IIe s. ap. J.-C.).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Thermes d'Agrippa (19 av. J.-C.) :</strong> Premiers thermes publics de Rome. Alimentés par l'aqueduc <em>Aqua Virgo</em>.</li>
+                    <li><strong>Saepta Iulia (26 av. J.-C.) :</strong> Achèvement du projet de César (lieu de vote), transformé en lieu de promenade et de marché.</li>
+                </ul>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">2. Le Champ de Mars Septentrional (Nord) : Le programme dynastique</h3>
+                <p style="line-height: 1.8;">Auguste se réserve cette zone pour son propre mausolée et la célébration de la Paix.</p>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Mausolée d'Auguste (28 av. J.-C.) :</strong>
+                        <ul>
+                            <li>Dès le début de son règne (avant même d'être empereur officiellement).</li>
+                            <li>Tumulus géant (87 m de diamètre) inspiré des tombes étrusques et des dynastes hellénistiques (Alexandre).</li>
+                            <li><em>Message :</em> Il fonde une dynastie éternelle à Rome.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Horologium Augusti (10 av. J.-C.) :</strong>
+                        <ul>
+                            <li>Cadran solaire géant. Le gnomon est un obélisque égyptien (ramené d'Héliopolis, actuellement place Montecitorio).</li>
+                            <li><em>Symbolique :</em> Domination universelle (maîtrise du temps et de l'espace) + lien avec la naissance d'Auguste.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Ara Pacis Augustae (Autel de la Paix) (13 - 9 av. J.-C.) :</strong>
+                        <ul>
+                            <li>Voté par le Sénat au retour d'Auguste de Gaule et d'Espagne.</li>
+                            <li><em>Décor :</em> Procession de la famille impériale (Auguste, Agrippa, Livie, enfants...), panneaux mythologiques (Énée, Romulus, Tellus/Italie).</li>
+                            <li><em>Message :</em> La prospérité et la paix sont garanties par la piété et la fertilité de la famille impériale.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Fiche CM 9 -->
+        <div id="cm8" class="cm-fiche">
+            <div style="max-width: 800px; text-align: left; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h2 style="color: var(--secondary-accent); border-bottom: 2px solid #eee; padding-bottom: 10px;">🧱 CM 9 - Les Julio-Claudiens (Tibère, Caligula, Claude)</h2>
+                <p style="font-style: italic; color: #666; margin-bottom: 20px;">Thème : La consolidation de l'administration et les infrastructures.</p>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">1. Tibère (14 - 37 ap. J.-C.)</h3>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Politique :</strong> Prince prudent, bon administrateur, respectueux du Sénat (au début).</li>
+                    <li><strong>Monuments :</strong>
+                        <ul>
+                            <li><em>Domus Tiberiana :</em> Premier vrai palais impérial sur le Palatin (extension de la maison d'Auguste).</li>
+                            <li><em>Castra Praetoria (23 ap. J.-C.) :</em> Caserne de la Garde Prétorienne aux portes de Rome (rôle politique croissant de l'armée).</li>
+                            <li><em>Temple de la Concorde (reconstruction) :</em> Forum Romain. Musée de sculpture grecque.</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">2. Caligula (37 - 41 ap. J.-C.)</h3>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Politique :</strong> Tendance monarchique et despotique. Règne court.</li>
+                    <li><strong>Palatin :</strong> Extension du palais vers le Forum (transforme le temple de Castor et Pollux en vestibule de son palais).</li>
+                    <li><strong>Cirque du Vatican :</strong> Début de construction (futur lieu du martyre de St Pierre), il y place l'obélisque qui est aujourd'hui place St Pierre.</li>
+                </ul>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">3. Claude (41 - 54 ap. J.-C.)</h3>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Politique :</strong> Érudit, conquérant (Bretagne), grand bâtisseur d'infrastructures (utilitarisme).</li>
+                    <li><strong>Aqua Claudia & Anio Novus (52 ap. J.-C.) :</strong> Deux immenses aqueducs.</li>
+                    <li><strong>Porta Maggiore :</strong> Monumentalisation de l'aqueduc (style rustique : <em>opus rusticum</em>, blocs bosselés).</li>
+                    <li><strong>Port de Claude (Ostie/Portus) :</strong> Création d'un immense port artificiel (bassins, phares) pour sécuriser le ravitaillement en blé de Rome (annone).</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Fiche CM 10 -->
+        <div id="cm9" class="cm-fiche">
+            <div style="max-width: 800px; text-align: left; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h2 style="color: var(--secondary-accent); border-bottom: 2px solid #eee; padding-bottom: 10px;">🔥 CM 10 - Néron (54 - 68 ap. J.-C.)</h2>
+                <p style="font-style: italic; color: #666; margin-bottom: 20px;">Thème : Démesure, philhellénisme et chute de la dynastie.</p>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">1. Le grand incendie de 64 ap. J.-C.</h3>
+                <ul style="line-height: 1.8;">
+                    <li>Détruit 10 des 14 régions de Rome.</li>
+                    <li>Accusations contre Néron (qui accuse les Chrétiens).</li>
+                    <li>Permet une refonte complète de l'urbanisme (rues plus larges, matériaux ignifuges) et la construction de son palais.</li>
+                </ul>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">2. La Domus Aurea (Maison Dorée) (64 - 68 ap. J.-C.)</h3>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Concept :</strong> Un palais-villa de campagne au cœur de la ville. Immense (50 à 80 ha), s'étendant du Palatin à l'Esquilin.</li>
+                    <li><strong>Architecture révolutionnaire :</strong>
+                        <ul>
+                            <li><em>Salle octogonale (Esquilin) :</em> Voûte en béton (<em>opus caementicium</em>) avec oculus central, sans colonnes intérieures. Prouesse technique.</li>
+                            <li><em>Décor :</em> Peintures "4ème style" (Fabullus), stucs, or, mosaïques (y compris aux voûtes, une nouveauté).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Colosse de Néron :</strong> Statue en bronze de 35m de haut (Néron en Hélios/Soleil) dans le vestibule.</li>
+                </ul>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">3. La chute et la Damnatio Memoriae</h3>
+                <ul style="line-height: 1.8;">
+                    <li>Suicide de Néron en 68 ap. J.-C. Fin des Julio-Claudiens.</li>
+                    <li>Le Sénat condamne sa mémoire (<em>damnatio memoriae</em>).</li>
+                    <li>La Domus Aurea est démantelée par ses successeurs (Flaviens) : le lac artificiel est asséché pour construire le Colisée, les thermes de Trajan recouvrent l'aile de l'Esquilin.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Fiche Dates Clés -->
+        <div id="cm11" class="cm-fiche">
+            <div style="max-width: 800px; text-align: left; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h2 style="color: var(--secondary-accent); border-bottom: 2px solid #eee; padding-bottom: 10px;">💡 Dates Clés à connaître par cœur</h2>
+                <p style="font-style: italic; color: #666; margin-bottom: 20px;">Chronologie essentielle de la Rome antique.</p>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">Période Archaïque et République</h3>
+                <ul style="line-height: 1.8;">
+                    <li><strong>753 av. J.-C. :</strong> Fondation légendaire de Rome.</li>
+                    <li><strong>509 av. J.-C. :</strong> Début de la République / Dédicace du temple de Jupiter Capitolin.</li>
+                    <li><strong>390 av. J.-C. :</strong> Sac de Rome par les Gaulois.</li>
+                    <li><strong>146 av. J.-C. :</strong> Destruction de Carthage et Corinthe (tournant de l'hellénisation).</li>
+                </ul>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">Fin de la République</h3>
+                <ul style="line-height: 1.8;">
+                    <li><strong>55 av. J.-C. :</strong> Théâtre de Pompée.</li>
+                    <li><strong>44 av. J.-C. :</strong> Assassinat de César.</li>
+                    <li><strong>31 av. J.-C. :</strong> Bataille d'Actium (début de l'ère augustéenne).</li>
+                    <li><strong>27 av. J.-C. :</strong> Octave devient Auguste (Début du Principat / Empire).</li>
+                </ul>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">L'Empire Augustéen</h3>
+                <ul style="line-height: 1.8;">
+                    <li><strong>2 av. J.-C. :</strong> Dédicace du Forum d'Auguste (Auguste reçoit le titre de <em>Pater Patriae</em>).</li>
+                    <li><strong>14 ap. J.-C. :</strong> Mort d'Auguste, avènement de Tibère.</li>
+                </ul>
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">Les Julio-Claudiens</h3>
+                <ul style="line-height: 1.8;">
+                    <li><strong>64 ap. J.-C. :</strong> Grand incendie de Rome (règne de Néron).</li>
+                    <li><strong>68 ap. J.-C. :</strong> Mort de Néron (fin de la dynastie julio-claudienne).</li>
+                </ul>
+
+                <hr style="margin: 30px 0; border: none; border-top: 2px solid #eee;">
+
+                <h3 style="color: var(--primary-color); margin-top: 25px;">📌 Concepts Techniques Clés</h3>
+                <ul style="line-height: 1.8;">
+                    <li><strong>Opus Caementicium :</strong> Béton romain, innovation technique permettant de construire les grandes coupoles (Panthéon, Domus Aurea).</li>
+                    <li><strong>Suovétaurile :</strong> Sacrifice rituel de trois animaux (porc, bélier, taureau) visible sur l'autel de Domitius Ahenobarbus et l'Ara Pacis.</li>
+                    <li><strong>Damnatio Memoriae :</strong> Condamnation de la mémoire d'un personnage par le Sénat (exemple : Néron).</li>
+                    <li><strong>Evergétisme :</strong> Pratique des magistrats de dépenser leur fortune personnelle pour embellir la ville.</li>
+                    <li><strong>Mos Maiorum :</strong> Les coutumes des ancêtres, tradition austère romaine.</li>
+                    <li><strong>Luxuria :</strong> Le luxe (souvent associé à l'influence grecque).</li>
+                    <li><strong>Princeps :</strong> "Le premier" (titre d'Auguste, chef sans être officiellement roi).</li>
+                </ul>
+            </div>
+        </div>
+        
+        </div><!-- Fin fiches-container -->
+
+        <!-- Conteneur Flashcards -->
+        <div id="flashcards-container" class="mode-container">
+            
+            <div class="scene" onclick="flipArtCard()">
+                <div class="card" id="artFlashcard">
+                    <div class="card__face card__face--front">
+                        <span class="category-tag" id="art-category-front">Catégorie</span>
+                        <div class="card-content" id="art-question-text">Question ici</div>
+                        <div class="instruction">(Clique pour voir la réponse)</div>
+                    </div>
+                    <div class="card__face card__face--back">
+                        <span class="category-tag" id="art-category-back">Catégorie</span>
+                        <div class="card-content" id="art-answer-text">Réponse ici</div>
+                        <div style="margin-top: 15px; font-size: 0.8rem; opacity: 0.7;" id="art-source-text">Source</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button onclick="prevArtCard()">← Précédent</button>
+                <div class="progress" id="art-progress-text">1 / 19</div>
+                <button onclick="nextArtCard()">Suivant →</button>
+            </div>
+
+        </div><!-- Fin flashcards-container -->
+
     </div>
 
     <div id="summaryModal" class="modal">
@@ -363,7 +1064,7 @@
     </div>
 
     <script>
-        // --- DONNÉES FLASHCARDS ---
+        // --- DONNÉES FLASHCARDS HISTOIRE INTELLECTUELLE ---
         const data = [
             // (J'ai gardé les mêmes questions que précédemment pour ne pas surcharger le code ici, elles sont incluses dans le script)
             { category: "Contexte & Église", q: "Qui a introduit le terme 'intellectuel' pour parler du Moyen Âge ?", a: "C'est l'historien Jacques Le Goff, bien que le mot n'existait pas à l'époque." },
@@ -408,13 +1109,241 @@
             { category: "Figures Clés", q: "Quelle est l'œuvre majeure d'Adélard de Bath ?", a: "Il a traduit Euclide et al-Khwarizmi, introduisant les sciences arabes et grecques en Europe." }
         ];
 
+        // --- DONNÉES FLASHCARDS HISTOIRE DE L'ART ---
+        const artData = [
+            { 
+                category: "Histoire de l'Art / Architecture", 
+                q: "Temple de Jupiter Capitolin : Quelle est sa date d'inauguration et ses caractéristiques architecturales principales ?", 
+                a: "Date : 509 av. J.-C. (1ère année de la République).\nStyle : Étrusco-italique (ou toscan).\nDétails : Plan presque carré, sur un haut podium, accès frontal unique, 3 cellae (Jupiter, Junon, Minerve). C'est le temple le plus important de Rome.",
+                source: "CM 1"
+            },
+            { 
+                category: "Histoire de l'Art / Architecture", 
+                q: "Muraille Servienne : À qui la tradition l'attribue-t-elle et de quand date-t-elle réellement d'après l'archéologie ?", 
+                a: "Tradition : Attribuée au roi Servius Tullius (VIe s. av. J.-C.).\nRéalité archéologique : IVe siècle av. J.-C., construite en tuf de Grotta Oscura après le sac de Rome par les Gaulois (390 av. J.-C.).",
+                source: "CM 1"
+            },
+            { 
+                category: "Histoire de l'Art / Technique", 
+                q: "Opus Caementicium : Qu'est-ce que c'est et quelle révolution cela permet-il ?", 
+                a: "Définition : Le 'béton romain'. Mélange de chaux, sable (pouzzolane), eau et agrégats (caementa).\nRévolution : Permet de s'affranchir du système 'poteau-poutre' grec pour créer une architecture de l'espace intérieur (voûtes, dômes, absides) solide et rapide à construire.",
+                source: "CM 2"
+            },
+            { 
+                category: "Histoire de l'Art / Architecture", 
+                q: "Porticus Aemilia : Date, fonction et innovation technique majeure ?", 
+                a: "Date : 193 av. J.-C. (restaurée en 174 av. J.-C.).\nFonction : Entrepôt (Navalia) au port de l'Emporium.\nInnovation : Premier grand édifice utilitaire utilisant l'opus caementicium à grande échelle (nefs voûtées en gradins).",
+                source: "CM 2"
+            },
+            { 
+                category: "Histoire de l'Art / Architecture", 
+                q: "Temple de Portunus : Quel style architectural particulier ce temple du Forum Boarium illustre-t-il ?", 
+                a: "Style : Pseudo-périptère.\nExplication : C'est un éclectisme (mélange). Il garde le plan italique (podium, façade) mais adopte l'ordre ionique grec. Les colonnes sur les côtés sont 'engagées' (collées) dans le mur de la cella.",
+                source: "CM 2"
+            },
+            { 
+                category: "Histoire de l'Art / Architecture", 
+                q: "Hermodoros de Salamine : Qui est-il et quels monuments majeurs lui sont attribués à Rome au IIe s. av. J.-C. ?", 
+                a: "Identité : Architecte grec actif à Rome.\nŒuvres : 1. Temple de Jupiter Stator (dans le portique de Metellus, 146 av. J.-C., premier temple en marbre). 2. Temple d'Hercule Olivarius (Tholos du Forum Boarium).",
+                source: "CM 2"
+            },
+            { 
+                category: "Histoire de l'Art / Sculpture", 
+                q: "L'Autel de Domitius Ahenobarbus : Pourquoi ce monument est-il l'exemple parfait de l'éclectisme romain ?", 
+                a: "Il juxtapose deux styles pour deux sujets différents sur le même socle :\n- Mythologie (Munich) : Noces de Neptune et Amphitrite en style hellénistique baroque (grec).\n- Histoire (Louvre) : Scène de recensement (Census) et sacrifice, en style historique romain (plus rigide).",
+                source: "CM 3"
+            },
+            { 
+                category: "Histoire / Religion", 
+                q: "Suovétaurile : Définition et contexte de représentation artistique.", 
+                a: "Définition : Sacrifice de purification très solennel dédié à Mars.\nComposition : Sus (porc) + Ovis (bélier) + Taurus (taureau).\nArt : Représenté sur le relief du Louvre ('Autel' de Domitius Ahenobarbus) fin IIe s. av. J.-C.",
+                source: "CM 3"
+            },
+            { 
+                category: "Histoire de l'Art / Sculpture", 
+                q: "Statue de culte du Temple B (Largo Argentina) : Quelle est la particularité technique de cette statue colossale (101 av. J.-C.) ?", 
+                a: "C'est une statue acrolithe. Seules les parties visibles (tête, bras, pieds) sont en marbre. Le reste du corps était une structure (bois/métal) recouverte de vrais vêtements ou de bronze. Le visage est de style classique grec (idéalisé).",
+                source: "CM 3"
+            },
+            { 
+                category: "Histoire de l'Art / Portrait", 
+                q: "Le 'Vérisme' : Qu'est-ce que ce style de portrait et que signifie-t-il politiquement ?", 
+                a: "Style : Hyper-réalisme qui accentue les signes de l'âge (rides, calvitie, verrues).\nSignification : Ce n'est pas juste de la vieillesse, c'est l'affichage de la Gravitas (sérieux) et de l'Auctoritas. Cela prouve que l'homme a consacré sa vie à la République (Mos Maiorum).",
+                source: "CM 3"
+            },
+            { 
+                category: "Histoire de l'Art / Portrait", 
+                q: "Le Pseudo-Athlète de Délos : Date : v. 80 av. J.-C. Quelle est la particularité de cette statue ?", 
+                a: "Elle illustre le mélange des valeurs :\n- Tête : Portrait réaliste d'un romain âgé (tradition romaine).\n- Corps : Corps d'athlète nu, jeune et idéalisé (héroïsation à la grecque).",
+                source: "CM 3"
+            },
+            { 
+                category: "Histoire de l'Art / Architecture", 
+                q: "Le Tabularium : Date, commanditaire et fonction.", 
+                a: "Date : 78 av. J.-C.\nCommanditaire : Q. Lutatius Catulus (époque de Sylla).\nFonction : Archives de l'État. Il monumentalise la colline du Capitole avec une façade à arcades encadrées de colonnes doriques.",
+                source: "CM 4"
+            },
+            { 
+                category: "Histoire de l'Art / Architecture", 
+                q: "Théâtre de Pompée : Date d'inauguration et astuce architecturale pour contourner la loi.", 
+                a: "Date : 55 av. J.-C.\nAstuce : Pour contourner l'interdiction de construire un théâtre permanent (en pierre), Pompée a placé un temple dédié à Vénus Victrix au sommet des gradins. Le théâtre était officiellement un escalier vers le temple.",
+                source: "CM 4"
+            },
+            { 
+                category: "Histoire de l'Art / Urbanisme", 
+                q: "Forum de César (Forum Iulium) : Date d'inauguration et temple central.", 
+                a: "Date : 46 av. J.-C.\nTemple : Temple de Vénus Genitrix (Vénus la Mère). César revendique ainsi une ascendance divine directe (descendant d'Énée, fils de Vénus).",
+                source: "CM 4"
+            },
+            { 
+                category: "Histoire / Dates", 
+                q: "Dates clés de la fin de la République : Mort de César et Bataille d'Actium.", 
+                a: "Mort de César : 44 av. J.-C. (Ides de Mars).\nBataille d'Actium : 31 av. J.-C. (Victoire d'Octave sur Marc-Antoine et Cléopâtre, marque la fin des guerres civiles).",
+                source: "CM 4 & 5"
+            },
+            { 
+                category: "Histoire de l'Art / Architecture", 
+                q: "Maison d'Auguste (Palatin) : Quelle est la stratégie politique derrière le choix de cet emplacement ?", 
+                a: "Auguste s'installe à proximité immédiate de la 'Cabane de Romulus' (Casa Romuli) et du temple d'Apollon. Il se présente comme le nouveau Romulus (nouveau fondateur) tout en affichant une modestie apparente (refus du palais monarchique luxueux).",
+                source: "CM 5"
+            },
+            { 
+                category: "Histoire / Politique", 
+                q: "27 av. J.-C. : Que se passe-t-il à cette date charnière pour Octave ?", 
+                a: "Octave reçoit le titre sacré d'Augustus (le Vénérable/celui qui augmente). C'est le début conventionnel du Principat (Empire). Il prétend avoir 'restauré la République' (Res Publica Restituta) alors qu'il instaure une monarchie déguisée.",
+                source: "CM 5"
+            },
+            { 
+                category: "Histoire de l'Art / Citation", 
+                q: "La transformation de Rome par Auguste : Quelle célèbre phrase de Suétone résume l'urbanisme d'Auguste ?", 
+                a: "'Il a trouvé une ville de briques, il a laissé une ville de marbre.'\nCela fait référence à la monumentalisation de Rome et à l'usage massif du marbre de Carrare (Luni) pour rivaliser avec les cités grecques.",
+                source: "CM 5"
+            },
+            { 
+                category: "Histoire de l'Art / Architecture", 
+                q: "Temple d'Apollon Palatin : Dates (Vœu/Dédicace) et localisation symbolique ?", 
+                a: "Dates : Voué en 36 av. J.-C. (Nauloque), inauguré en 28 av. J.-C.\nLieu : Construit sur le Palatin, dans la propriété privée d'Auguste, relié à sa maison.\nSymbolique : Apollon est le dieu tutélaire d'Auguste. Le temple célèbre la victoire d'Actium sur l'Orient.",
+                source: "CM 6"
+            },
+            { 
+                category: "Histoire de l'Art / Sculpture", 
+                q: "Le décor du Temple d'Apollon Palatin : Quelles statues célèbres ornaient le portique de ce temple ?", 
+                a: "Les Danaïdes : 50 statues des filles de Danaos (symbolisant probablement la soumission de l'Égypte/Cléopâtre ou le châtiment des impies).\nStatue de culte : Apollon citharède (jouant de la lyre) réalisé par le sculpteur grec Scopas (œuvre rapportée de Grèce).",
+                source: "CM 6"
+            },
+            { 
+                category: "Histoire de l'Art / Architecture", 
+                q: "Temple du Divin Jules (Divus Iulius) : Date d'inauguration et particularité unique de sa façade ?", 
+                a: "Date : 29 av. J.-C.\nFaçade : Ornée des Rostres (éperons de navires) des bateaux de Cléopâtre et Marc-Antoine vaincus à Actium.\nFonction : Premier temple dédié à un mortel divinisé sur le Forum Romain.",
+                source: "CM 6"
+            },
+            { 
+                category: "Histoire / Urbanisme", 
+                q: "Le Forum d'Auguste : Quelle est la date d'inauguration et le temps de construction ?", 
+                a: "Inauguration : 2 av. J.-C.\nContexte : Chantier très long (vœu fait en 42 av. J.-C. à la bataille de Philippes).\nIl sert à désengorger le Forum Romain et à glorifier la gens Iulia.",
+                source: "CM 7"
+            },
+            { 
+                category: "Histoire de l'Art / Décor", 
+                q: "Les Caryatides du Forum d'Auguste : De quel monument grec sont-elles la copie et que signifient-elles ?", 
+                a: "Modèle : Copie fidèle des caryatides de l'Érechthéion (Acropole d'Athènes).\nSignification : Elles ne portent pas l'entablement (fonction décorative, pas structurelle). Elles symbolisent la soumission des peuples ou l'intégration de la culture classique grecque dans la grandeur romaine (Athènes 'nouvelle' à Rome).",
+                source: "CM 7"
+            },
+            { 
+                category: "Histoire de l'Art / Architecture", 
+                q: "Temple de Mars Ultor (Vengeur) : Où est-il situé et que commémore-t-il spécifiquement ?", 
+                a: "Lieu : Au fond du Forum d'Auguste, fermant la perspective.\nCommémoration double :\n1. Vengeance contre les assassins de César (Brutus et Cassius).\n2. Vengeance diplomatique contre les Parthes (restitution des enseignes de Crassus en 20 av. J.-C., déposées dans le temple).",
+                source: "CM 7"
+            },
+            { 
+                category: "Histoire / Politique", 
+                q: "Les Summi Viri : Qu'est-ce que c'est et où les trouve-t-on ?", 
+                a: "Définition : Galerie de statues des 'Grands Hommes' de l'histoire de Rome, accompagnées de leur elogium (résumé de carrière).\nEmplacement : Dans les deux grandes exèdres (hémicycles) du Forum d'Auguste. Romulus au centre de l'une, Énée au centre de l'autre.",
+                source: "CM 7"
+            },
+            { 
+                category: "Histoire de l'Art / Architecture", 
+                q: "Mausolée d'Auguste : Date de début des travaux et inspirations architecturales ?", 
+                a: "Date : 28 av. J.-C. (Dès le début du principat).\nInspirations :\n- Les tumuli étrusques (ancrage italique).\n- Le tombeau d'Alexandre le Grand (référence dynastique hellénistique).",
+                source: "CM 8"
+            },
+            { 
+                category: "Histoire de l'Art / Sculpture", 
+                q: "L'Ara Pacis Augustae : Dates et définition du style artistique des reliefs.", 
+                a: "Dates : Voté en 13 av. J.-C., dédicacé en 9 av. J.-C.\nStyle : Néo-attique. C'est un classicisme froid et élégant, inspiré de la frise des Panathénées du Parthénon, mais adapté à l'idéologie romaine (portraits réalistes de la famille impériale, présence des enfants).",
+                source: "CM 8"
+            },
+            { 
+                category: "Histoire de l'Art / Iconographie", 
+                q: "La Frise Végétale de l'Ara Pacis : Quelle est sa signification symbolique ?", 
+                a: "Elle représente une nature foisonnante et ordonnée (rinceaux d'acanthe peuplés de petits animaux).\nMessage : L'Âge d'Or (Saeculum Aureum). La paix d'Auguste (Pax Augusta) apporte fertilité et prospérité universelle à la nature et à l'Empire.",
+                source: "CM 8"
+            },
+            { 
+                category: "Histoire de l'Art / Architecture", 
+                q: "Le Panthéon d'Agrippa : Quelle différence majeure y a-t-il entre le Panthéon d'Agrippa (27 av. J.-C.) et celui que nous voyons aujourd'hui ?", 
+                a: "Le Panthéon actuel est une reconstruction d'Hadrien (IIe s. ap. J.-C.).\nLe Panthéon original d'Agrippa était probablement de plan rectangulaire (transversal) et orienté vers le Sud, contrairement à la rotonde orientée au Nord actuelle.",
+                source: "CM 8"
+            },
+            { 
+                category: "Histoire de l'Art / Sculpture", 
+                q: "La Grotte de Sperlonga : Sous quel empereur est-elle aménagée et quel style de sculpture y trouve-t-on ?", 
+                a: "Empereur : Tibère (sa villa d'été).\nStyle : Baroque hellénistique (pathétique, mouvement, musculature exacerbée). Ex: Le groupe du Châtiment de Scylla ou l'Aveuglement de Polyphème.\nArtistes : Signé par les sculpteurs rhodiens (Athénodoros, Agésandros, Polydoros), auteurs probables du Laocoon.",
+                source: "CM 9"
+            },
+            { 
+                category: "Histoire de l'Art / Architecture", 
+                q: "La Porte Majeure (Porta Maggiore) : Date, empereur et style architectural particulier ?", 
+                a: "Date : 52 ap. J.-C.\nEmpereur : Claude.\nStyle : Le Style Rustique (Opus Rusticum). Les blocs de travertin sont laissés volontairement bosselés et non finis pour donner une impression de force et d'ancienneté.",
+                source: "CM 9"
+            },
+            { 
+                category: "Histoire / Ingénierie", 
+                q: "Le Port de Claude (Portus) : Pourquoi Claude construit-il ce nouveau port ?", 
+                a: "Le port d'Ostie (embouchure du Tibre) était ensablé et dangereux.\nClaude creuse un gigantesque bassin artificiel (au nord d'Ostie) avec deux môles et un phare (sur le modèle d'Alexandrie) pour sécuriser l'Annone (ravitaillement en blé de Rome).",
+                source: "CM 9"
+            },
+            { 
+                category: "Histoire / Urbanisme", 
+                q: "L'Incendie de Rome : Date exacte et conséquence architecturale majeure ?", 
+                a: "Date : Juillet 64 ap. J.-C.\nConséquence : Destruction de quartiers entiers. Néron impose un nouvel urbanisme (rues larges, portiques en façade, matériaux ignifuges) et s'approprie une immense zone pour sa Domus Aurea.",
+                source: "CM 10"
+            },
+            { 
+                category: "Histoire de l'Art / Architecture", 
+                q: "La Salle Octogonale (Domus Aurea) : Pourquoi est-elle une révolution architecturale ?", 
+                a: "C'est l'un des premiers exemples majeurs de l'architecture de béton (opus caementicium) complexe.\nUne coupole à pans octogonaux avec un oculus central (puits de lumière), sans colonnes intérieures pour la soutenir. Elle préfigure le Panthéon.",
+                source: "CM 10"
+            },
+            { 
+                category: "Histoire de l'Art / Peinture", 
+                q: "Le 4ème Style Pompéien : Où apparaît-il et qui est le peintre principal de Néron ?", 
+                a: "Apparition : Dans la Domus Aurea (Maison Dorée).\nCaractéristiques : Style 'fantastique'. Accumulation de décors, architectures irréelles, trompe-l'œil, grotesques.\nPeintre : Fabullus (ou Famulus), décrit par Pline l'Ancien comme un peintre 'grave et sévère' qui peignait en toge.",
+                source: "CM 10"
+            },
+            { 
+                category: "Histoire de l'Art / Sculpture", 
+                q: "Le Colosse de Néron : Qui l'a réalisé et quelles sont ses dimensions ?", 
+                a: "Sculpteur : Zénodore.\nDescription : Statue en bronze de plus de 30-35 mètres de haut, représentant Néron (avec les attributs du Soleil/Hélios). Elle se trouvait dans le vestibule de la Domus Aurea (proche du futur Colisée qui en tire son nom).",
+                source: "CM 10"
+            }
+        ];
+
         let currentIndex = 0;
+        let currentArtIndex = 0;
         const cardElement = document.getElementById('flashcard');
+        const artCardElement = document.getElementById('artFlashcard');
         const questionText = document.getElementById('question-text');
         const answerText = document.getElementById('answer-text');
+        const artQuestionText = document.getElementById('art-question-text');
+        const artAnswerText = document.getElementById('art-answer-text');
+        const artSourceText = document.getElementById('art-source-text');
         const categoryFront = document.getElementById('category-front');
         const categoryBack = document.getElementById('category-back');
+        const artCategoryFront = document.getElementById('art-category-front');
+        const artCategoryBack = document.getElementById('art-category-back');
         const progressText = document.getElementById('progress-text');
+        const artProgressText = document.getElementById('art-progress-text');
         const modal = document.getElementById("summaryModal");
 
         // --- GESTION DES LIENS PDF ---
@@ -449,6 +1378,62 @@
             updateCard();
         });
 
+        // --- FONCTIONS ONGLETS ---
+        function switchTab(tabName) {
+            // Cacher tous les contenus
+            const allContents = document.querySelectorAll('.tab-content');
+            allContents.forEach(content => content.classList.remove('active'));
+
+            // Désactiver tous les onglets
+            const allTabs = document.querySelectorAll('.tab');
+            allTabs.forEach(tab => tab.classList.remove('active'));
+
+            // Activer le contenu sélectionné
+            document.getElementById(tabName).classList.add('active');
+
+            // Activer l'onglet cliqué
+            event.target.classList.add('active');
+        }
+
+        // --- FONCTIONS MODE (FICHES / FLASHCARDS) ---
+        function switchMode(mode) {
+            // Cacher tous les conteneurs
+            const allContainers = document.querySelectorAll('.mode-container');
+            allContainers.forEach(container => container.classList.remove('active-mode'));
+
+            // Désactiver tous les boutons mode
+            const allModeButtons = document.querySelectorAll('.mode-button');
+            allModeButtons.forEach(btn => btn.classList.remove('active'));
+
+            // Activer le mode sélectionné
+            if (mode === 'fiches') {
+                document.getElementById('fiches-container').classList.add('active-mode');
+            } else if (mode === 'flashcards') {
+                document.getElementById('flashcards-container').classList.add('active-mode');
+                updateArtCard(); // Initialiser la première carte
+            }
+
+            // Activer le bouton cliqué
+            event.target.classList.add('active');
+        }
+
+        // --- FONCTIONS CM (Histoire de l'art) ---
+        function showCM(cmNumber) {
+            // Cacher toutes les fiches
+            const allFiches = document.querySelectorAll('.cm-fiche');
+            allFiches.forEach(fiche => fiche.classList.remove('active-fiche'));
+
+            // Désactiver tous les boutons CM
+            const allButtons = document.querySelectorAll('.cm-button');
+            allButtons.forEach(btn => btn.classList.remove('active'));
+
+            // Activer la fiche sélectionnée
+            document.getElementById('cm' + cmNumber).classList.add('active-fiche');
+
+            // Activer le bouton cliqué
+            event.target.classList.add('active');
+        }
+
         // --- FONCTIONS FLASHCARDS ---
         function updateCard() {
             cardElement.classList.remove('is-flipped');
@@ -482,6 +1467,59 @@
                 currentIndex = data.length - 1;
             }
             updateCard();
+        }
+
+        // --- FONCTIONS FLASHCARDS HISTOIRE DE L'ART ---
+        function updateArtCard() {
+            artCardElement.classList.remove('is-flipped');
+            setTimeout(() => {
+                const item = artData[currentArtIndex];
+                artQuestionText.textContent = item.q;
+                artAnswerText.textContent = item.a;
+                artSourceText.textContent = item.source;
+                artCategoryFront.textContent = item.category;
+                artCategoryBack.textContent = item.category;
+                artProgressText.textContent = `${currentArtIndex + 1} / ${artData.length}`;
+                
+                // Appliquer les classes de fond selon la catégorie
+                const frontFace = artCardElement.querySelector('.card__face--front');
+                const backFace = artCardElement.querySelector('.card__face--back');
+                
+                // Retirer les classes existantes
+                frontFace.classList.remove('art-history', 'history');
+                backFace.classList.remove('art-history', 'history');
+                
+                // Ajouter la classe appropriée
+                if (item.category.startsWith("Histoire de l'Art")) {
+                    frontFace.classList.add('art-history');
+                    backFace.classList.add('art-history');
+                } else if (item.category.startsWith("Histoire")) {
+                    frontFace.classList.add('history');
+                    backFace.classList.add('history');
+                }
+            }, 200);
+        }
+
+        function flipArtCard() {
+            artCardElement.classList.toggle('is-flipped');
+        }
+
+        function nextArtCard() {
+            if (currentArtIndex < artData.length - 1) {
+                currentArtIndex++;
+            } else {
+                currentArtIndex = 0;
+            }
+            updateArtCard();
+        }
+
+        function prevArtCard() {
+            if (currentArtIndex > 0) {
+                currentArtIndex--;
+            } else {
+                currentArtIndex = artData.length - 1;
+            }
+            updateArtCard();
         }
 
         // --- FONCTIONS MODAL ---
